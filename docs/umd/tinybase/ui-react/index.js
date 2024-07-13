@@ -48,6 +48,7 @@
     arrayEvery(array1, (value1, index) => array2[index] === value1);
   const arrayMap = (array, cb) => array.map(cb);
   const arrayIsEmpty = (array) => size(array) == 0;
+  const arrayFilter = (array, cb) => array.filter(cb);
 
   const object = Object;
   const getPrototypeOf = (obj) => object.getPrototypeOf(obj);
@@ -215,12 +216,7 @@
       /* eslint-disable-next-line react-hooks/exhaustive-deps */
       [thing, returnType, listenable, ...args],
     );
-    const result = useSyncExternalStore(subscribe, getResult);
-    return returnType == 0 /* Object */
-      ? {...result}
-      : returnType < 3 /* CellOrValue */
-        ? [...result]
-        : result;
+    return useSyncExternalStore(subscribe, getResult);
   };
   const useListener = (
     listenable,
@@ -252,9 +248,7 @@
           ifNotUndefined(get(parameter, store2), (thing) =>
             then(
               store2['set' + settable](
-                ...arrayMap(args, (arg) =>
-                  isFunction(arg) ? arg(parameter, store2) : arg,
-                ),
+                ...argsOrGetArgs(args, store2, parameter),
                 thing,
               ),
               thing,
@@ -262,9 +256,13 @@
           ),
         ),
       // eslint-disable-next-line react-hooks/exhaustive-deps
-      [store, settable, ...getDeps, ...thenDeps, ...args],
+      [store, settable, ...getDeps, ...thenDeps, ...nonFunctionDeps(args)],
     );
   };
+  const argsOrGetArgs = (args, store, parameter) =>
+    arrayMap(args, (arg) => (isFunction(arg) ? arg(parameter, store) : arg));
+  const nonFunctionDeps = (args) =>
+    arrayFilter(args, (arg) => !isFunction(arg));
   const useDel = (
     storeOrStoreId,
     deletable,
@@ -274,9 +272,12 @@
   ) => {
     const store = useStoreOrStoreById(storeOrStoreId);
     return useCallback$2(
-      () => then(store?.['del' + deletable](...args)),
+      (parameter) =>
+        then(
+          store?.['del' + deletable](...argsOrGetArgs(args, store, parameter)),
+        ),
       // eslint-disable-next-line react-hooks/exhaustive-deps
-      [store, deletable, ...thenDeps, ...args],
+      [store, deletable, ...thenDeps, ...nonFunctionDeps(args)],
     );
   };
   const useCheckpointAction = (checkpointsOrCheckpointsId, action, arg) => {
