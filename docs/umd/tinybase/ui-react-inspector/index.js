@@ -96,7 +96,6 @@
   const arrayMap = (array, cb) => array.map(cb);
   const arrayIsEmpty = (array) => size(array) == 0;
   const arrayReduce = (array, cb, initial) => array.reduce(cb, initial);
-  const arrayClear = (array, to) => array.splice(0, to);
   const arrayPush = (array, ...values) => array.push(...values);
   const arrayShift = (array) => array.shift();
 
@@ -1627,10 +1626,15 @@
       },
     );
 
+  const Persists = {
+    StoreOnly: 1,
+    MergeableStoreOnly: 2,
+    StoreOrMergeableStore: 3,
+  };
   const scheduleRunning = mapNew();
   const scheduleActions = mapNew();
-  const getStoreFunctions = (persist = 1 /* StoreOnly */, store) =>
-    persist != 1 /* StoreOnly */ && store.isMergeable()
+  const getStoreFunctions = (persist = Persists.StoreOnly, store) =>
+    persist != Persists.StoreOnly && store.isMergeable()
       ? [
           1,
           store.getMergeableContent,
@@ -1639,7 +1643,7 @@
             !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
           store.setDefaultContent,
         ]
-      : persist != 2 /* MergeableStoreOnly */
+      : persist != Persists.MergeableStoreOnly
         ? [
             0,
             store.getContent,
@@ -1707,7 +1711,10 @@
         loads++;
         await schedule(async () => {
           try {
-            setContentOrChanges(await getPersisted());
+            const content = await getPersisted();
+            isArray(content)
+              ? setContentOrChanges(content)
+              : errorNew(`Content is not an array ${content}`);
           } catch (error) {
             if (initialContent) {
               setDefaultContent(initialContent);
@@ -1720,21 +1727,19 @@
     };
     const startAutoLoad = async (initialContent) => {
       await stopAutoLoad().load(initialContent);
-      try {
-        autoLoadHandle = addPersisterListener(async (content, changes) => {
-          if (changes || content) {
-            /* istanbul ignore else */
-            if (loadSave != 2) {
-              loadSave = 1;
-              loads++;
-              setContentOrChanges(changes ?? content);
-              loadSave = 0;
-            }
-          } else {
-            await load();
+      autoLoadHandle = addPersisterListener(async (content, changes) => {
+        if (changes || content) {
+          /* istanbul ignore else */
+          if (loadSave != 2) {
+            loadSave = 1;
+            loads++;
+            setContentOrChanges(changes ?? content);
+            loadSave = 0;
           }
-        });
-      } catch (error) {}
+        } else {
+          await load();
+        }
+      });
       return persister;
     };
     const stopAutoLoad = () => {
@@ -1781,10 +1786,7 @@
       return persister;
     };
     const getStore = () => store;
-    const destroy = () => {
-      arrayClear(mapGet(scheduleActions, scheduleId));
-      return stopAutoLoad().stopAutoSave();
-    };
+    const destroy = () => stopAutoLoad().stopAutoSave();
     const getStats = () => ({loads, saves});
     const persister = {
       load,
@@ -1837,8 +1839,7 @@
       addPersisterListener,
       delPersisterListener,
       onIgnoredError,
-      3,
-      // StoreOrMergeableStore,
+      Persists.StoreOrMergeableStore,
       {getStorageName: () => storageName},
     );
   };
@@ -2034,6 +2035,7 @@
       }
       return true;
     };
+    const validateContent = isArray;
     const validateTables = (tables) =>
       objValidate(tables, validateTable, cellInvalid);
     const validateTable = (table, tableId) =>
@@ -2182,6 +2184,10 @@
       );
     const setOrDelTables = (tables) =>
       objIsEmpty(tables) ? delTables() : setTables(tables);
+    const setValidContent = ([tables, values]) => {
+      (objIsEmpty(tables) ? delTables : setTables)(tables);
+      (objIsEmpty(values) ? delValues : setValues)(values);
+    };
     const setValidTables = (tables) =>
       mapMatch(
         tablesMap,
@@ -2686,11 +2692,10 @@
     const getValuesSchemaJson = () => jsonStringWithMap(valuesSchemaMap);
     const getSchemaJson = () =>
       jsonStringWithMap([tablesSchemaMap, valuesSchemaMap]);
-    const setContent = ([tables, values]) =>
-      fluentTransaction(() => {
-        (objIsEmpty(tables) ? delTables : setTables)(tables);
-        (objIsEmpty(values) ? delValues : setValues)(values);
-      });
+    const setContent = (content) =>
+      fluentTransaction(() =>
+        validateContent(content) ? setValidContent(content) : 0,
+      );
     const setTables = (tables) =>
       fluentTransaction(() =>
         validateTables(tables) ? setValidTables(tables) : 0,
