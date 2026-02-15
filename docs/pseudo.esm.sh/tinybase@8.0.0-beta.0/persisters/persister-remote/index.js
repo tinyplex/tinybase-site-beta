@@ -52,16 +52,17 @@ var collHas = (coll, keyOrValue) => coll?.has(keyOrValue) ?? false;
 var collIsEmpty = (coll) => isUndefined(coll) || collSize(coll) == 0;
 var collForEach = (coll, cb) => coll?.forEach(cb);
 var collDel = (coll, keyOrValue) => coll?.delete(keyOrValue);
-var mapNew = (entries) => new Map(entries);
-var mapGet = (map, key) => map?.get(key);
-var mapSet = (map, key, value) => isUndefined(value) ? (collDel(map, key), map) : map?.set(key, value);
-var mapEnsure = (map, key, getDefaultValue, hadExistingValue) => {
-  if (!collHas(map, key)) {
-    mapSet(map, key, getDefaultValue());
+var map = Map;
+var mapNew = (entries) => new map(entries);
+var mapGet = (map2, key) => map2?.get(key);
+var mapSet = (map2, key, value) => isUndefined(value) ? (collDel(map2, key), map2) : map2?.set(key, value);
+var mapEnsure = (map2, key, getDefaultValue, hadExistingValue) => {
+  if (!collHas(map2, key)) {
+    mapSet(map2, key, getDefaultValue());
   } else {
-    hadExistingValue?.(mapGet(map, key));
+    hadExistingValue?.(mapGet(map2, key));
   }
-  return mapGet(map, key);
+  return mapGet(map2, key);
 };
 var visitTree = (node, path, ensureLeaf, pruneLeaf, p = 0) => ifNotUndefined(
   (ensureLeaf ? mapEnsure : mapGet)(
@@ -213,6 +214,11 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
   const setContentOrChanges = (contentOrChanges) => {
     (isMergeableStore && isArray(contentOrChanges?.[0]) ? contentOrChanges?.[2] === 1 ? store.applyMergeableChanges : store.setMergeableContent : contentOrChanges?.[2] === 1 ? store.applyChanges : store.setContent)(contentOrChanges);
   };
+  const saveAfterMutated = async () => {
+    if (isAutoSaving() && store.hadMutated?.()) {
+      await save();
+    }
+  };
   const load = async (initialContent) => {
     if (status != 2) {
       setStatus(
@@ -242,6 +248,7 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
           0
           /* Idle */
         );
+        await saveAfterMutated();
       });
     }
     return persister;
@@ -264,6 +271,7 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
                 0
                 /* Idle */
               );
+              await saveAfterMutated();
             }
           } else {
             await load();

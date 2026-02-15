@@ -54,6 +54,8 @@ var objFreeze = object.freeze;
 var objNew = (entries = []) => object.fromEntries(entries);
 var objHas = (obj, id) => id in obj;
 var objForEach = (obj, cb) => arrayForEach(objEntries(obj), ([id, value]) => cb(value, id));
+var objToArray = (obj, cb) => arrayMap(objEntries(obj), ([id, value]) => cb(value, id));
+var objMap = (obj, cb) => objNew(objToArray(obj, (value, id) => [id, cb(value, id)]));
 var objSize = (obj) => size(objIds(obj));
 var objIsEmpty = (obj) => isObject(obj) && objSize(obj) == 0;
 var objEnsure = (obj, id, getDefaultValue) => {
@@ -65,7 +67,11 @@ var objEnsure = (obj, id, getDefaultValue) => {
 var jsonString = JSON.stringify;
 var jsonParse = JSON.parse;
 var jsonStringWithUndefined = (obj) => jsonString(obj, (_key, value) => isUndefined(value) ? UNDEFINED : value);
-var jsonParseWithUndefined = (str) => jsonParse(str, (_key, value) => value === UNDEFINED ? void 0 : value);
+var jsonParseWithUndefined = (str) => (
+  // JSON.parse reviver removes properties with undefined values
+  replaceUndefinedString(jsonParse(str))
+);
+var replaceUndefinedString = (obj) => obj === UNDEFINED ? void 0 : isArray(obj) ? arrayMap(obj, replaceUndefinedString) : isObject(obj) ? objMap(obj, replaceUndefinedString) : obj;
 var MESSAGE_SEPARATOR = "\n";
 var ifPayloadValid = (payload, then) => {
   const splitAt = payload.indexOf(MESSAGE_SEPARATOR);
@@ -84,16 +90,17 @@ var collHas = (coll, keyOrValue) => coll?.has(keyOrValue) ?? false;
 var collIsEmpty = (coll) => isUndefined(coll) || collSize(coll) == 0;
 var collForEach = (coll, cb) => coll?.forEach(cb);
 var collDel = (coll, keyOrValue) => coll?.delete(keyOrValue);
-var mapNew = (entries) => new Map(entries);
-var mapGet = (map, key) => map?.get(key);
-var mapSet = (map, key, value) => isUndefined(value) ? (collDel(map, key), map) : map?.set(key, value);
-var mapEnsure = (map, key, getDefaultValue, hadExistingValue) => {
-  if (!collHas(map, key)) {
-    mapSet(map, key, getDefaultValue());
+var map = Map;
+var mapNew = (entries) => new map(entries);
+var mapGet = (map2, key) => map2?.get(key);
+var mapSet = (map2, key, value) => isUndefined(value) ? (collDel(map2, key), map2) : map2?.set(key, value);
+var mapEnsure = (map2, key, getDefaultValue, hadExistingValue) => {
+  if (!collHas(map2, key)) {
+    mapSet(map2, key, getDefaultValue());
   } else {
-    hadExistingValue?.(mapGet(map, key));
+    hadExistingValue?.(mapGet(map2, key));
   }
-  return mapGet(map, key);
+  return mapGet(map2, key);
 };
 var visitTree = (node, path, ensureLeaf, pruneLeaf, p = 0) => ifNotUndefined(
   (ensureLeaf ? mapEnsure : mapGet)(
@@ -265,6 +272,11 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
   const setContentOrChanges = (contentOrChanges) => {
     (isMergeableStore && isArray(contentOrChanges?.[0]) ? contentOrChanges?.[2] === 1 ? store.applyMergeableChanges : store.setMergeableContent : contentOrChanges?.[2] === 1 ? store.applyChanges : store.setContent)(contentOrChanges);
   };
+  const saveAfterMutated = async () => {
+    if (isAutoSaving() && store.hadMutated?.()) {
+      await save();
+    }
+  };
   const load = async (initialContent) => {
     if (status != 2) {
       setStatus(
@@ -294,6 +306,7 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
           0
           /* Idle */
         );
+        await saveAfterMutated();
       });
     }
     return persister;
@@ -316,6 +329,7 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
                 0
                 /* Idle */
               );
+              await saveAfterMutated();
             }
           } else {
             await load();
