@@ -65,7 +65,7 @@ var objIsEqual = (obj1, obj2, isEqual3 = (value1, value2) => value1 === value2) 
     entries1,
     ([index, value1]) => isObject(value1) ? (
       /* istanbul ignore next */
-      isObject(obj2[index]) ? objIsEqual(obj2[index], value1) : false
+      isObject(obj2[index]) ? objIsEqual(obj2[index], value1, isEqual3) : false
     ) : isEqual3(value1, obj2[index])
   );
 };
@@ -110,13 +110,14 @@ var DEFAULTS = [
   false,
   0
 ];
+var cellOrValueEqual = (thing1, thing2) => thing1 === thing2 || (isObject(thing1) || isArray(thing1)) && jsonString(thing1) === jsonString(thing2);
 var IS_EQUALS = [
-  objIsEqual,
+  (obj1, obj2) => objIsEqual(obj1, obj2, cellOrValueEqual),
   arrayIsEqual,
   ([backwardIds1, currentId1, forwardIds1], [backwardIds2, currentId2, forwardIds2]) => currentId1 === currentId2 && arrayIsEqual(backwardIds1, backwardIds2) && arrayIsEqual(forwardIds1, forwardIds2),
   (paramValues1, paramValues2) => objIsEqual(paramValues1, paramValues2, arrayOrValueEqual),
   arrayOrValueEqual,
-  (thing1, thing2) => thing1 === thing2 || (isObject(thing1) || isArray(thing1)) && jsonString(thing1) === jsonString(thing2)
+  cellOrValueEqual
 ];
 var isEqual = (thing1, thing2) => thing1 === thing2;
 var addAndDelListener = (thing, listenable, ...args) => {
@@ -328,7 +329,7 @@ var objIsEqual2 = (obj1, obj2, isEqual3 = (value1, value2) => value1 === value2)
     entries1,
     ([index, value1]) => isObject2(value1) ? (
       /* istanbul ignore next */
-      isObject2(obj2[index]) ? objIsEqual2(obj2[index], value1) : false
+      isObject2(obj2[index]) ? objIsEqual2(obj2[index], value1, isEqual3) : false
     ) : isEqual3(value1, obj2[index])
   );
 };
@@ -386,13 +387,14 @@ var DEFAULTS2 = [
   false,
   0
 ];
+var cellOrValueEqual2 = (thing1, thing2) => thing1 === thing2 || (isObject2(thing1) || isArray2(thing1)) && jsonString2(thing1) === jsonString2(thing2);
 var IS_EQUALS2 = [
-  objIsEqual2,
+  (obj1, obj2) => objIsEqual2(obj1, obj2, cellOrValueEqual2),
   arrayIsEqual2,
   ([backwardIds1, currentId1, forwardIds1], [backwardIds2, currentId2, forwardIds2]) => currentId1 === currentId2 && arrayIsEqual2(backwardIds1, backwardIds2) && arrayIsEqual2(forwardIds1, forwardIds2),
   (paramValues1, paramValues2) => objIsEqual2(paramValues1, paramValues2, arrayOrValueEqual2),
   arrayOrValueEqual2,
-  (thing1, thing2) => thing1 === thing2 || (isObject2(thing1) || isArray2(thing1)) && jsonString2(thing1) === jsonString2(thing2)
+  cellOrValueEqual2
 ];
 var isEqual2 = (thing1, thing2) => thing1 === thing2;
 var addAndDelListener2 = (thing, listenable, ...args) => {
