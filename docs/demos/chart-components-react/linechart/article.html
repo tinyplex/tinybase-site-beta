@@ -1,4 +1,4 @@
-<nav><ul><li><a href="/">TinyBase</a></li><li><a href="/demos/">Demos</a></li><li><a href="/demos/chart-components-react/">Chart Components (React)</a></li><li><a href="/demos/chart-components-react/linechart/">&lt;LineChart /&gt;</a></li></ul></nav><section class="s1" id="/demos/chart-components-react/linechart/" data-id="&lt;LC"><h1>&lt;LineChart /&gt;</h1><iframe srcdoc="&lt;html&gt;
+<nav><ul><li><a href="/" aria-current="true">TinyBase</a></li><li><a href="/demos/" aria-current="true">Demos</a></li><li><a href="/demos/chart-components-react/" aria-current="true">Chart Components (React)</a></li><li><a href="/demos/chart-components-react/linechart/" aria-current="page">&lt;LineChart /&gt;</a></li></ul></nav><section class="s1" id="/demos/chart-components-react/linechart/" data-id="&lt;LC"><h1>&lt;LineChart /&gt;</h1><iframe srcdoc="&lt;html&gt;
       &lt;head&gt;
         
         &lt;style&gt;@font-face{font-family:Inter;src:url(https://tinybase.org/fonts/inter.woff2) format(&#x27;woff2&#x27;)}*{box-sizing:border-box}body{background:white;font-family:Inter,sans-serif;margin:0}main{margin:2rem auto;max-width:52rem;padding:0 2rem}.chart{display:block;font-size:12px;height:20rem;width:100%}@media (max-width:40rem){main{padding:0 1rem}}&lt;/style&gt;
@@ -7,12 +7,12 @@
         
       &lt;/body&gt;
       &lt;script type=&#x27;module&#x27;&gt;// ../../../../../../demo/src/main.jsx
-import { jsx } from &quot;https://esm.sh/react@^19.2.8/jsx-runtime&quot;;
-import React from &quot;https://esm.sh/react@^19.2.8&quot;;
-import { createRoot } from &quot;https://esm.sh/react-dom@^19.2.8/client&quot;;
-import { createStore } from &quot;https://esm.sh/tinybase@10.0.0-beta.0&quot;;
-import { Provider, useCreateStore } from &quot;https://esm.sh/tinybase@10.0.0-beta.0/ui-react&quot;;
-import { LineChart } from &quot;https://esm.sh/tinybase@10.0.0-beta.0/ui-react-dom-charts&quot;;
+import { jsx } from &quot;https://esm.sh/react@^19.3.0/jsx-runtime&quot;;
+import React from &quot;https://esm.sh/react@^19.3.0&quot;;
+import { createRoot } from &quot;https://esm.sh/react-dom@^19.3.0/client&quot;;
+import { createStore } from &quot;https://esm.sh/tinybase@10.0.0-beta.1&quot;;
+import { Provider, useCreateStore } from &quot;https://esm.sh/tinybase@10.0.0-beta.1/ui-react&quot;;
+import { LineChart } from &quot;https://esm.sh/tinybase@10.0.0-beta.1/ui-react-dom-charts&quot;;
 var App = () =&gt; {
   const store = useCreateStore(
     () =&gt; createStore().setTable(&quot;sales&quot;, {
@@ -40,12 +40,12 @@ var Body = () =&gt; jsx(&quot;main&quot;, { children: jsx(
     &lt;/html&gt;"></iframe><p>In this demo, we render a <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> <a href="/api/store/type-aliases/store/table/"><code>Table</code></a> with the <a href="/api/ui-react-dom-charts/functions/store-components/linechart/"><code>LineChart</code></a> component from the <a href="/api/ui-react-dom-charts/"><code>ui-react-dom-charts</code></a> module.</p><h3 id="boilerplate">Boilerplate</h3><p>First, we create the import aliases for TinyBase and React modules we&#x27;ll need:</p><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
   <span class="punctuation">{</span>
     <span class="string-property">"imports"</span><span class="operator">:</span> <span class="punctuation">{</span>
-      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@10.0.0-beta.0"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@10.0.0-beta.0/ui-react"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-react-dom-charts"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@10.0.0-beta.0/ui-react-dom-charts"</span><span class="punctuation">,</span>
-      <span class="string-property">"react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.2.8"</span><span class="punctuation">,</span>
-      <span class="string-property">"react/jsx-runtime"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.2.8/jsx-runtime"</span><span class="punctuation">,</span>
-      <span class="string-property">"react-dom/client"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react-dom@^19.2.8/client"</span>
+      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@10.0.0-beta.1"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@10.0.0-beta.1/ui-react"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-react-dom-charts"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@10.0.0-beta.1/ui-react-dom-charts"</span><span class="punctuation">,</span>
+      <span class="string-property">"react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.3.0"</span><span class="punctuation">,</span>
+      <span class="string-property">"react/jsx-runtime"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.3.0/jsx-runtime"</span><span class="punctuation">,</span>
+      <span class="string-property">"react-dom/client"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react-dom@^19.3.0/client"</span>
     <span class="punctuation">}</span>
   <span class="punctuation">}</span>
 </span></span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>script</span><span class="punctuation">></span></span>

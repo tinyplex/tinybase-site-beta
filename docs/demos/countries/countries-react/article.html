@@ -1,4 +1,4 @@
-<nav><ul><li><a href="/">TinyBase</a></li><li><a href="/demos/">Demos</a></li><li><a href="/demos/countries/">Countries</a></li><li><a href="/demos/countries/countries-react/">Countries (React)</a></li></ul></nav><section class="s1" id="/demos/countries/countries-react/" data-id="CR"><h1>Countries (React)</h1><iframe srcdoc="&lt;html&gt;
+<nav><ul><li><a href="/" aria-current="true">TinyBase</a></li><li><a href="/demos/" aria-current="true">Demos</a></li><li><a href="/demos/countries/" aria-current="true">Countries</a></li><li><a href="/demos/countries/countries-react/" aria-current="page">Countries (React)</a></li></ul></nav><section class="s1" id="/demos/countries/countries-react/" data-id="CR"><h1>Countries (React)</h1><iframe srcdoc="&lt;html&gt;
       &lt;head&gt;
         
         &lt;style&gt;@font-face{font-family:Inter;src:url(https://tinybase.org/fonts/inter.woff2) format(&#x27;woff2&#x27;)}body{box-sizing:border-box;display:flex;font-family:Inter,sans-serif;letter-spacing:-0.04rem;margin:0;height:100vh;text-align:center}#filters{overflow-y:scroll;border-right:1px solid #ccc;padding:.5rem}#filters .filter{cursor:pointer}#filters .filter.current{color:#d81b60}#filters .filter .label,#filters .filter .count{display:inline-block;width:2em}#filters .filter .count{color:#777;font-size:.8rem;text-align:left}#countries{flex:1;display:grid;grid-template-columns:repeat(4, minmax(0, 1fr));grid-auto-rows:max-content;gap:.5rem;padding:1rem;overflow-y:scroll}#countries .country{background:#fff;border:1px solid #ccc;padding:.5rem;position:relative;height:fit-content}#countries .country .star{cursor:pointer;display:inline;left:8px;position:absolute;top:5px;user-select:none}#countries .country .flag{font-size:5rem;line-height:1em}#countries .country .name{overflow:hidden;text-overflow:ellipsis;vertical-align:top;white-space:nowrap}&lt;/style&gt;
@@ -7,16 +7,16 @@
         
       &lt;/body&gt;
       &lt;script type=&#x27;module&#x27;&gt;// ../../../../../../demo/src/main.jsx
-import { jsx, jsxs } from &quot;https://esm.sh/react@^19.2.8/jsx-runtime&quot;;
-import { useCallback } from &quot;https://esm.sh/react@^19.2.8&quot;;
-import React from &quot;https://esm.sh/react@^19.2.8&quot;;
-import { createRoot } from &quot;https://esm.sh/react-dom@^19.2.8/client&quot;;
-import { createIndexes, createStore, defaultSorter } from &quot;https://esm.sh/tinybase@10.0.0-beta.0&quot;;
+import { jsx, jsxs } from &quot;https://esm.sh/react@^19.3.0/jsx-runtime&quot;;
+import { useCallback } from &quot;https://esm.sh/react@^19.3.0&quot;;
+import React from &quot;https://esm.sh/react@^19.3.0&quot;;
+import { createRoot } from &quot;https://esm.sh/react-dom@^19.3.0/client&quot;;
+import { createIndexes, createStore, defaultSorter } from &quot;https://esm.sh/tinybase@10.0.0-beta.1&quot;;
 import {
   createLocalPersister,
   createSessionPersister
-} from &quot;https://esm.sh/tinybase@10.0.0-beta.0/persisters/persister-browser&quot;;
-import { createRemotePersister } from &quot;https://esm.sh/tinybase@10.0.0-beta.0/persisters/persister-remote&quot;;
+} from &quot;https://esm.sh/tinybase@10.0.0-beta.1/persisters/persister-browser&quot;;
+import { createRemotePersister } from &quot;https://esm.sh/tinybase@10.0.0-beta.1/persisters/persister-remote&quot;;
 import {
   CellView,
   IndexView,
@@ -29,8 +29,8 @@ import {
   useSetValuesCallback,
   useSliceRowIds,
   useValues
-} from &quot;https://esm.sh/tinybase@10.0.0-beta.0/ui-react&quot;;
-import { Inspector } from &quot;https://esm.sh/tinybase@10.0.0-beta.0/ui-react-inspector&quot;;
+} from &quot;https://esm.sh/tinybase@10.0.0-beta.1/ui-react&quot;;
+import { Inspector } from &quot;https://esm.sh/tinybase@10.0.0-beta.1/ui-react-inspector&quot;;
 var STAR = &quot;\u2605&quot;;
 var UNSTAR = &quot;\u2606&quot;;
 var App = () =&gt; {
@@ -179,14 +179,14 @@ var Country = (props) =&gt; {
     &lt;/html&gt;"></iframe><p>In this demo, we build a simple app that uses React and a simple <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> object to load and display country data.</p><h3 id="initialization">Initialization</h3><p>First, we create the import aliases for TinyBase and React modules we&#x27;ll need:</p><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
   <span class="punctuation">{</span>
     <span class="string-property">"imports"</span><span class="operator">:</span> <span class="punctuation">{</span>
-      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@10.0.0-beta.0"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/persisters/persister-browser"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@10.0.0-beta.0/persisters/persister-browser"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/persisters/persister-remote"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@10.0.0-beta.0/persisters/persister-remote"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@10.0.0-beta.0/ui-react"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-react-inspector"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@10.0.0-beta.0/ui-react-inspector"</span><span class="punctuation">,</span>
-      <span class="string-property">"react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.2.8"</span><span class="punctuation">,</span>
-      <span class="string-property">"react/jsx-runtime"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.2.8/jsx-runtime"</span><span class="punctuation">,</span>
-      <span class="string-property">"react-dom/client"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react-dom@^19.2.8/client"</span>
+      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@10.0.0-beta.1"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/persisters/persister-browser"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@10.0.0-beta.1/persisters/persister-browser"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/persisters/persister-remote"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@10.0.0-beta.1/persisters/persister-remote"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@10.0.0-beta.1/ui-react"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-react-inspector"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@10.0.0-beta.1/ui-react-inspector"</span><span class="punctuation">,</span>
+      <span class="string-property">"react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.3.0"</span><span class="punctuation">,</span>
+      <span class="string-property">"react/jsx-runtime"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.3.0/jsx-runtime"</span><span class="punctuation">,</span>
+      <span class="string-property">"react-dom/client"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react-dom@^19.3.0/client"</span>
     <span class="punctuation">}</span>
   <span class="punctuation">}</span>
 </span></span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>script</span><span class="punctuation">></span></span>
