@@ -40,7 +40,6 @@ one.
 | `tinybase/persisters/persister-cr-sqlite-wasm`             | `createCrSqliteWasmPersister`                                                             | Store only              |
 | `tinybase/persisters/persister-durable-object-sql-storage` | `createDurableObjectSqlStoragePersister`                                                  | MergeableStore only     |
 | `tinybase/persisters/persister-durable-object-storage`     | `createDurableObjectStoragePersister`                                                     | MergeableStore only     |
-| `tinybase/persisters/persister-electric-sql`               | `createElectricSqlPersister`                                                              | Store only              |
 | `tinybase/persisters/persister-expo-sqlite`                | `createExpoSqlitePersister`                                                               | Store or MergeableStore |
 | `tinybase/persisters/persister-file`                       | `createFilePersister`                                                                     | Store or MergeableStore |
 | `tinybase/persisters/persister-indexed-db`                 | `createIndexedDbPersister`                                                                | Store or MergeableStore |
@@ -57,7 +56,6 @@ one.
 | `tinybase/persisters/persister-sqlite-bun`                 | `createSqliteBunPersister`                                                                | Store or MergeableStore |
 | `tinybase/persisters/persister-sqlite-node`                | `createSqliteNodePersister`                                                               | Store or MergeableStore |
 | `tinybase/persisters/persister-sqlite-wasm`                | `createSqliteWasmPersister`                                                               | Store or MergeableStore |
-| `tinybase/persisters/persister-sqlite3`                    | `createSqlite3Persister`                                                                  | Store or MergeableStore |
 | `tinybase/persisters/persister-supabase`                   | `createSupabasePersister`                                                                 | Store or MergeableStore |
 | `tinybase/persisters/persister-tinyjoin`                   | `createTinyJoinPersister`                                                                 | Store or MergeableStore |
 | `tinybase/persisters/persister-yjs`                        | `createYjsPersister`                                                                      | Store only              |
